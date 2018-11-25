@@ -15,11 +15,9 @@ public class gameSI : MonoBehaviour
 	public bool humanIsRed=true;
 	public int[,] board;
 
-
 	bool reciveInput;
 	bool draw;
 	int victory;
-
 
 	public smartLable turn;
 	public smartButton one;
@@ -41,12 +39,15 @@ public class gameSI : MonoBehaviour
     public bool switchTurn = true;
     public int turncount;
     public bool sending = true;
+    public Text TurnText;
 
 
    
 	// Use this for initialization
 	void Start ()
     {
+        
+        StartCoroutine(DisplayShootForFewSec("RedPlayerShoot!"));
         PlayerPrefs.SetInt("turncount", 0);
         draw =false;
 		victory=0;
@@ -119,7 +120,8 @@ public class gameSI : MonoBehaviour
             PlayerPrefs.SetInt("Scene", 3);
            
 		}
-		else{
+		else
+        {
 		//turn.text="Black wins!";
             Debug.Log("BLACK WON");
             reciveInput =false;
@@ -141,21 +143,29 @@ public class gameSI : MonoBehaviour
 			StartCoroutine(wait());
 		}
 	}
-	IEnumerator runComputorTurn()
+    int row;
+
+    IEnumerator runComputorTurn()
     {
 		reciveInput=false;
-		int row = getComputerMove();
+		 row = getComputerMove();
 		float elapsed=0;
-		while(elapsed<dumbCompwaitTime){
+		while(elapsed<dumbCompwaitTime)
+        {
 			elapsed+=Time.deltaTime;
 			yield return 0;
 		}
 		dropChip(row);
 		if(red_turn){
-			Instantiate(red,new Vector3(row-3,3.6f,1),Quaternion.identity);
+
+
+           
+
+
+            Instantiate(red,new Vector3(row-3,3.6f,1),Quaternion.identity);
 		}
 		else{
-			Instantiate(black,new Vector3(row-3,3.6f,1),Quaternion.identity);
+            StartCoroutine("waitForFewMinBeforeNextTurn");
 		}
 		StartCoroutine(wait());
 	}
@@ -204,7 +214,8 @@ public class gameSI : MonoBehaviour
 		if(board[x,y]==0){
 			return false;
 	}
-	else if(board[x,y]==-1)
+	else 
+    if(board[x,y]==-1)
 
             {
             if (lookForFour(x,y,1,-1,0,-1,false))
@@ -247,7 +258,6 @@ public class gameSI : MonoBehaviour
 				return true;
 			}
 			else{
-				//Debug.Log("time 2: "+Time.realtimeSinceStartup);
 				return false;
                
 			}
@@ -317,15 +327,19 @@ public class gameSI : MonoBehaviour
         if (isRowOpen(index) && reciveInput && !draw)
         {
             dropChip(index);
+          
             if (red_turn)
             {
                 //player1
                 Instantiate(red, new Vector3(index - 3, 3.6f, 1), Quaternion.identity); // spaawn in centre of the screen
+                StartCoroutine(DisplayShootForFewSec("WhitePlayerShoot!"));
             }
             else
             {
                 //player2
+              
                 Instantiate(black, new Vector3(index - 3, 3.6f, 1), Quaternion.identity); // spaawn in centre of the screen
+                
             }
             StartCoroutine(wait());
         }
@@ -337,6 +351,21 @@ public class gameSI : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         SceneManager.LoadScene(sceneIndex);
 
+    }
+
+    public IEnumerator DisplayShootForFewSec(string shootText)
+    {
+        yield return new WaitForSeconds(.5f);
+        TurnText.text = shootText;
+        yield return new WaitForSeconds(0.5f);
+        TurnText.text = "";
+    }
+
+    public IEnumerator waitForFewMinBeforeNextTurn()
+    {
+        yield return new WaitForSeconds(0.7f);
+        StartCoroutine(DisplayShootForFewSec("RedPlayerShoot!"));
+        Instantiate(black, new Vector3(row - 3, 3.6f, 1), Quaternion.identity);
     }
 }
 
