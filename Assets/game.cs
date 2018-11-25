@@ -127,7 +127,6 @@ public class game : MonoBehaviour
             turn.text = "Red wins!";
             reciveInput = false;
             PlayerPrefs.SetInt("turncount", turncount);
-            // StartCoroutine("waitForFewSec");
             StartCoroutine(WiatForGameToEnd(4));
         }
         else
