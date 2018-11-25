@@ -60,7 +60,7 @@ public class game : MonoBehaviour
     }
     void Start()
     {
-    
+        //Initially set the Player Turn to red and display shoot 
         StartCoroutine(waitforRedTurnTextEnd("Red Player Shoot!"));
 
         draw = false;
